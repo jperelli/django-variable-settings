@@ -12,7 +12,7 @@ class Command(BaseCommand):
             dest='reset',
             action='store_true',
             default=False)
-    
+
     def handle(self, *args, **options):
 
         self.stdout.write('Start initializing variable settings')
@@ -22,18 +22,25 @@ class Command(BaseCommand):
             self.stdout.write('All variable settings deleted')
 
         for s in settings.VARIABLE_SETTINGS:
+            if len (s) == 2: # If overwrite not set explicetely
+                key, value, overwrite = s + [False]
+            elif len (s) == 3:
+                key, value, overwrite = s
+            else:
+                self.stdout.write('  ERROR: invalid format for {}'.format(s[0]))
+
             try:
-                setting = Setting.objects.get(key = s[0])
-                if len(s) >= 3 and s[2] == True:
-                    setting.value = s[1]
+                setting = Setting.objects.get(key = key)
+                if overwrite:
+                    setting.value = value
                     setting.save()
-                    self.stdout.write('set {} [forced]'.format(s[0]))
+                    self.stdout.write('  SET {} [forced]'.format(key))
                 else:
-                    self.stdout.write('skip {}'.format(s[0]))
+                    self.stdout.write('  SKIP {}'.format(key))
             except Setting.DoesNotExist:
-                setting = Setting(key = s[0])
-                setting.value = s[1]
+                setting = Setting(key = key)
+                setting.value = value
                 setting.save()
-                self.stdout.write('set {}'.format(s[0]))
+                self.stdout.write('set {}'.format(key))
 
         self.stdout.write('Finish initializing variable settings')
