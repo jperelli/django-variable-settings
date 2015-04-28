@@ -6,3 +6,6 @@ class Setting(models.Model):
 
     def __unicode__(self):
     	return '{{"{}": "{}"}}'.format(self.key, self.value)
+
+    class Meta(object):
+    	app_label = 'django_variable_settings'
