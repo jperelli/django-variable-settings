@@ -34,13 +34,13 @@ class Command(BaseCommand):
                 if overwrite:
                     setting.value = value
                     setting.save()
-                    self.stdout.write('  SET {} [forced]'.format(key))
+                    self.stdout.write("  SET  {} to '{}' [forced]".format(key, value))
                 else:
                     self.stdout.write('  SKIP {}'.format(key))
             except Setting.DoesNotExist:
                 setting = Setting(key = key)
                 setting.value = value
                 setting.save()
-                self.stdout.write('set {}'.format(key))
+                self.stdout.write('  SET  {}'.format(key))
 
         self.stdout.write('Finish initializing variable settings')
