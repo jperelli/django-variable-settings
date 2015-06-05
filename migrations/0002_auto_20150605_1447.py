@@ -5,11 +5,11 @@ from django.db import models, migrations
 
 def jsonify_strings(apps, schema_editor):
     # Wraps each setting 'value' in "
-    Setting = app.get_mode('django_variable_settings', 'Settings')
+    settings = apps.get_model('django_variable_settings', 'Setting')
     print "INFO: adding \" to all django_variable_settings values"
-    for setting in Settings.objects.all():
+    for setting in settings.objects.all():
         setting.value = '"' + setting.value + '"'
-        setting.save
+        setting.save()
 
 
 class Migration(migrations.Migration):
