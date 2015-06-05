@@ -1,24 +1,29 @@
 from .models import Setting
+import json
 
 def get(key):
-    # key could be "alarming.ficon.*"
+    # key can be "alarming.ficon.*" or without asterisk
+    # value can be a plain string or a json object
     
     if len(key) == 0:
         raise Exception("An empty key was received")
     
     if key[-1] == "*":
-        return { s.key: s.value for s in Setting.objects.filter(key__startswith = key[:-1]) }
+        d = {}
+        for s in Setting.objects.filter(key__startswith = key[:-1]):
+            d.update({s.key: json.loads(s.value)})
+        return d
     
     # let it raise an exception if the key is not found
-    return Setting.objects.get(key = key).value
+    v = json.loads(Setting.objects.get(key = key).value)
 
 def set(key, value):
     try:
         s = Setting.objects.get(key = key)
     except Setting.DoesNotExist:
         s = Setting(key = key)
-    s.value = value
+    s.value = json.dumps(value)
     s.save()
 
 def all():
-    return { s.key: s.value for s in Setting.objects.all() }
+    return Setting.objects.all()
