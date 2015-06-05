@@ -1,11 +1,16 @@
 from .models import Setting
 
 def get(key):
-    try:
-        return Setting.objects.get(key = key).value
-    except Setting.DoesNotExist:
-        return None
-
+    # key could be "alarming.ficon.*"
+    
+    if len(key) == 0:
+        raise Exception("An empty key was received")
+    
+    if key[-1] == "*":
+        return { s.key: s.value for s in Setting.objects.filter(key__startswith = key[:-1]) }
+    
+    # let it raise an exception if the key is not found
+    return Setting.objects.get(key = key).value
 
 def set(key, value):
     try:
@@ -16,4 +21,4 @@ def set(key, value):
     s.save()
 
 def all():
-    return Setting.objects.all()
+    return { s.key: s.value for s in Setting.objects.all() }
