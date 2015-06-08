@@ -15,7 +15,7 @@ def get(key):
         return d
     
     # let it raise an exception if the key is not found
-    v = json.loads(Setting.objects.get(key = key).value)
+    return json.loads(Setting.objects.get(key = key).value)
 
 def set(key, value):
     try:
