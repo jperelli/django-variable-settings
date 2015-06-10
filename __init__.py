@@ -26,4 +26,7 @@ def set(key, value):
     s.save()
 
 def all():
-    return Setting.objects.all()
+    d = {}
+    for s in Setting.objects.all():
+        d.update({s.key: json.loads(s.value)})
+    return d
