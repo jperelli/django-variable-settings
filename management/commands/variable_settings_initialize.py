@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from ...models import Setting
+import json
 
 class Command(BaseCommand):
     help = 'Initializes variable settings with values found in settings'
@@ -12,6 +13,10 @@ class Command(BaseCommand):
             dest='reset',
             action='store_true',
             default=False)
+
+    def save_object(self, setting, value):
+        setting.value = json.dumps(value)
+        setting.save()
 
     def handle(self, *args, **options):
 
@@ -32,15 +37,22 @@ class Command(BaseCommand):
             try:
                 setting = Setting.objects.get(key = key)
                 if overwrite:
-                    setting.value = value
-                    setting.save()
-                    self.stdout.write("  SET  {} to '{}' [forced]".format(key, value))
+                    try:
+                        self.save_object(setting, value)
+                        self.stdout.write("  SET  {} to '{}' [forced]".format(key, value))
+                    except:
+                        self.stdout.write("!ERROR {} to '{}' [forced]".format(key, value))
+                        raise
                 else:
                     self.stdout.write('  SKIP {}'.format(key))
+
             except Setting.DoesNotExist:
                 setting = Setting(key = key)
-                setting.value = value
-                setting.save()
-                self.stdout.write('  SET  {}'.format(key))
+                try:
+                    self.save_object(setting, value)
+                    self.stdout.write('  SET  {}'.format(key))
+                except:
+                    self.stdout.write("!ERROR {} to '{}'".format(key, value))
+                    raise
 
         self.stdout.write('Finish initializing variable settings')
