@@ -1,7 +1,7 @@
-from .models import Setting
-import json
 
 def get(key):
+    from .models import Setting
+    import json
     # key can be "alerting.ficon.*" or without asterisk
     # value can be a plain string or a json object
     
@@ -18,6 +18,8 @@ def get(key):
     return json.loads(Setting.objects.get(key = key).value)
 
 def set(key, value):
+    from .models import Setting
+    import json
     try:
         s = Setting.objects.get(key = key)
     except Setting.DoesNotExist:
@@ -26,6 +28,8 @@ def set(key, value):
     s.save()
 
 def all():
+    from .models import Setting
+    import json
     d = {}
     for s in Setting.objects.all():
         d.update({s.key: json.loads(s.value)})
