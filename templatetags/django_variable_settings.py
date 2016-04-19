@@ -5,8 +5,12 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_setting(name):
+def get_setting(name, default=''):
     try:
-        return get(name)
+        value = get(name)
+        if value is not None:
+            return value
+        else:
+            return default
     except:
-        return ''
+        return default
