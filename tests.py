@@ -6,4 +6,5 @@ from django.core.management import call_command
 class ManagementTest(TestCase):
 
     def test_variable_settings_initialize(self):
-        call_command('variable_settings_initialize')
+        with open('/dev/null', 'w') as f:  # avoids annoying output
+            call_command('variable_settings_initialize', stdout=f)
