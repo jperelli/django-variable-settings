@@ -6,7 +6,7 @@ from django.db import models, migrations
 def jsonify_strings(apps, schema_editor):
     # Wraps each setting 'value' in "
     settings = apps.get_model('django_variable_settings', 'Setting')
-    print "INFO: adding \" to all django_variable_settings values"
+    # print "INFO: adding \" to all django_variable_settings values"
     for setting in settings.objects.all():
         setting.value = '"' + setting.value + '"'
         setting.save()
