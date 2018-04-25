@@ -1,5 +1,8 @@
 # django-variable-settings
 
+[![Build Status](https://travis-ci.org/jperelli/django-variable-settings.svg?branch=master)](https://travis-ci.org/jperelli/django-variable-settings)
+
+
 A simple django application to manage dynamic settings saved in database using namespaced keys and json string values.
 
 ## Demo

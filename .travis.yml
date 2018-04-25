@@ -1,0 +1,25 @@
+language: python
+
+sudo: false
+
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+env:
+  - DJANGO="Django>=1.8,<1.9" DB=sqlite
+  - DJANGO="Django>=1.9,<1.10" DB=sqlite
+  - DJANGO="Django>=1.10,<1.11" DB=sqlite
+  - DJANGO="Django>=1.11,<1.12" DB=sqlite
+matrix:
+  exclude:
+    - python: "3.6"
+      env: DJANGO="Django>=1.8,<1.9" DB=sqlite
+
+install:
+  - export PYTHONPATH=./variable_settings/:$PYTHONPATH
+  - pip install -U $DJANGO
+
+script:
+  - python example_project/manage.py test
